@@ -23,6 +23,7 @@
     "nodemon": "^2.0.12"
   },
   "dependencies": {
+    "commander": "^8.2.0",
     "yargs": "^17.2.1"
   }
 }

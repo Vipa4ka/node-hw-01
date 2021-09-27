@@ -1,106 +1,58 @@
-// const argv = require('yargs').argv;
+const { program } = require('commander');
 
-const yargs = require("yargs");
-const { hideBin } = require("yargs/helpers");
+const contactsFunctions = require("./contactsFunctions");
 
-const arr = hideBin(process.argv);
-// console.log(arr);
-const {argv} = yargs(arr);
-console.log(argv);
+program
+  .option('-a, --action <type>', 'choose action')
+  .option('-i, --id <type>', 'user id')
+  .option('-n, --name <type>', 'user name')
+  .option('-e, --email <type>', 'user email')
+  .option('-p, --phone <type>', 'user phone');
+  
+program.parse(process.argv);
 
+const argv = program.opts();
+// console.log(argv);
 
-// const fs = require("fs");
-
-// const contactsFunctions = require("./contactsFunctions");
-
-// const id = 19;
-// const newContact = {
-//     "name": "Helen Iks",
-//     "email": "heleiks@egetlacus.ca",
-//     "phone": "(048) 312-4585"
-// };
-// const delId = 11;
-
-// (async () => {
-//     try {
-//         // const contacts = await contactsFunctions.listContacts();
-//         // console.log(contacts);
-
-//         // const contactsById = await contactsFunctions.getContactById(id);
-//         // if (!contactsById) {
-//         //     throw new Error(`Contact with id:${id} not found`);
-//         // }
-//         // console.log(contactsById);
-
-//         // const newContacts = await contactsFunctions.addContact(newContact);
-//         // console.log(newContacts);
-
-//         const removeContact = await await contactsFunctions.removeContact(delId);
-//         if (!removeContact) {
-//             throw new Error(`Contact with id:${delId} not found`);
-//         }
-//         console.log("Remove was successful");
-//     }
-//     catch (error) {
-//         console.log(error.message);
-//     }
-// })();
-   
-
-
-// const contacts = require("./contacts");
-
-
-// const fs = require("fs/promises");
-
-
-// // fs.readFile("files/read.txt", "utf-8")
-// //     .then(data => console.log(data))
-// //     .catch(error => console.log(error.message)
-
-// const readFile = async (filePath) => {
-//     try {
-//         const data = await fs.readFile(filePath, "utf-8");
-//         console.log(data);
-//     }
-//     catch (error) {
-//         console.log(error.message);
-//     }
-// };
-
-// readFile("contacts.json"); 
-
-// index.js
-// const argv = require('yargs').argv;
-
-// // TODO: рефакторить
-// function invokeAction({ action, id, name, email, phone }) {
-//   switch (action) {
-//     case 'list':
-//       // ...
-//       break;
-
-//     case 'get':
-//       // ... id
-//       break;
-
-//     case 'add':
-//       // ... name email phone
-//       break;
-
-//     case 'remove':
-//       // ... id
-//       break;
-
-//     default:
-//       console.warn('\x1B[31m Unknown action type!');
-//   }
-// }
-
-// invokeAction(argv);
-
-
-
-// const users = require("./users");
-// console.log(users);
-
+(async () => {
+    const { action, id, name, email, phone} = argv;
+    switch (action) {
+        case "list":
+            const contacts = await contactsFunctions.listContacts();
+            console.log(contacts);
+            break;
+        
+        case "get":
+            const contactsById = await contactsFunctions.getContactById(id);
+            if (!contactsById) {
+                throw new Error(`Contact with id:${id} not found`);
+                break;
+            }
+            console.log(contactsById);
+            break;
+            
+        
+        case "add":
+            if (!name || !email || !phone) {
+                console.log("To record a new contact, you need to specify name, email and phone ")
+                break;
+            }            
+            const newContacts = await contactsFunctions.addContact(name, email, phone);
+            
+            console.log(newContacts);
+            break;
+        
+        case "remove":
+            const removeContact = await contactsFunctions.removeContact(id);
+            if (!removeContact) {
+            throw new Error(`Contact with id:${id} not found`);
+            }
+            else {
+                console.log("Remove was successful");
+            }            
+            break;
+        
+        default:
+            console.warn('\x1B[31m Unknown action type!');
+    }
+})();
