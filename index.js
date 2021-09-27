@@ -12,14 +12,14 @@ program
 program.parse(process.argv);
 
 const argv = program.opts();
-// console.log(argv);
+
 
 (async () => {
     const { action, id, name, email, phone} = argv;
     switch (action) {
         case "list":
             const contacts = await contactsFunctions.listContacts();
-            console.log(contacts);
+            console.table(contacts);
             break;
         
         case "get":
